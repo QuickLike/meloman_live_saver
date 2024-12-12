@@ -1,7 +1,7 @@
 # [Meloman Live Saver](https://github.com/QuickLike/meloman_live_saver)
 
 ## Meloman Live Saver:
-Скрипт, который позволяет скачивать записи прямых трансляций с сайта [Московской Филармонии](https://meloman.ru/)
+Сервис, который позволяет скачивать записи прямых трансляций с сайта [Московской Филармонии](https://meloman.ru/)
 
 ### Запуск проекта:
 Клонируйте [репозиторий](https://github.com/QuickLike/meloman_live_saver) и перейдите в него в командной строке:
