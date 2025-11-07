@@ -32,12 +32,12 @@ def main():
     # url = input('Вставьте ссылку на прямую трансляцию' + '\n')
     # check_live_link(url)
     live_link = input('Введите ссылку\n')
-    session = authorize(USERNAME, PASSWORD, live_link)
-    response = session.get(url=live_link, headers=HEADERS)
+    session = authorize(USERNAME, PASSWORD)
+    response = session.get(url='https://meloman.ru')
     with open('index.html', 'w', encoding='UTF-8') as file:
         file.write(response.text)
-    soup = BeautifulSoup(response.text, 'lxml')
-    print(soup.find('video').get('src'))
+    # soup = BeautifulSoup(response.text, 'lxml')
+    # print(soup.find('video').get('src'))
     # filename = download_live(url)
     # print(f'Загрузка завершена!  |  {filename}')
 

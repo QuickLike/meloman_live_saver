@@ -1,9 +1,10 @@
 import re
 
+from bs4 import BeautifulSoup
 from getpass import getpass
 import requests
 
-from constants import LOGIN_URL, LOGIN_HEADERS, LOGIN_FORM, USERNAME, PASSWORD
+from constants import LOGIN_URL, LOGIN_HEADERS, LOGIN_FORM, USERNAME, PASSWORD, MAIN_URL
 
 
 def check_live_link(link: str):
@@ -13,23 +14,29 @@ def check_live_link(link: str):
         raise ValueError('Некорректная ссылка!')
 
 
-def authorize(username: str = None, password: str = None, next_url: str = '') -> requests.Session | None:
-    session = requests.Session()
-    response = session.get(LOGIN_URL)
-    response.raise_for_status()
-    csrf_token = session.cookies.get('csrftoken')
+def authorize(username: str = None, password: str = None) -> requests.Session | None:
     if username is None:
         username = input('Введите ваш E-Mail:\n')
     if password is None:
         password = getpass('Введите ваш пароль:\n')
+
+    session = requests.Session()
+    session.auth = (username, password)
+    resp = session.get(MAIN_URL, headers=LOGIN_HEADERS)
+    soup = BeautifulSoup(resp.text, 'lxml')
+    csrf_token = soup.find('input', {'name': 'csrfmiddlewaretoken'}).get('value')
     login_data = {
         'csrfmiddlewaretoken': csrf_token,
         'username': username,
         'password': password,
-        'next': next_url
     }
     print(username, password)
-    login_response = session.post(LOGIN_URL, data=dict(**LOGIN_FORM, **login_data), headers=LOGIN_HEADERS)
+    login_response = session.post(
+        LOGIN_URL,
+        data=dict(**LOGIN_FORM, **login_data),
+        headers=LOGIN_HEADERS,
+        allow_redirects=True,
+    )
     login_response.raise_for_status()
     if login_response.ok:
         print("Вход выполнен успешно!")
